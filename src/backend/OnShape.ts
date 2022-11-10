@@ -154,7 +154,7 @@ export default class OnShape {
     }
     
     buildDWMVEPath(opts: opts) {
-    var path = '/api/' + opts.resource + '/d/' + opts.d;
+    var path = '/api/v5/' + opts.resource + '/d/' + opts.d;
     if ('w' in opts) {
         path += '/w/' + opts.w;
     } else if ('v' in opts) {

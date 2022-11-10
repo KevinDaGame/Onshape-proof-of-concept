@@ -32,12 +32,6 @@ async function libGetDocuments(queryObject: object, cb: Function) {
   onShape.get(opts, cb);
 }
 
-export function getGLTF(opts: opts, cb: Function) {
-  libGetGLTF(opts, (data: any) => {
-    cb(data);
-  });
-}
-
-async function libGetGLTF(opts:opts, cb: Function) {
-  onShape.get(opts, cb);
+export function get(opts: opts, cb: Function) {
+ onShape.get(opts, cb);
 }
