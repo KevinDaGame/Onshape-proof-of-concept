@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import GLTFComponent from './GLTFComponent'
 import { CameraControls } from './camera-controls.js'
 import { useEffect, useRef, useState } from 'react'
@@ -6,6 +6,7 @@ import DataComponent from './DataComponent'
 import InputComponent from './InputComponent'
 import Box from './Box'
 import { part } from '../types'
+import { AxesHelper } from 'three'
 
 type props = {
   gltf: part[]
@@ -13,7 +14,7 @@ type props = {
 }
 const ThreeDView = (props: props) => {
   const cameraControls = useRef(null);
-  const [cameraPosition, setCameraPosition] = useState([10, 10, 10]);
+  const [cameraPosition, setCameraPosition] = useState([0,-1,0]);
   const [crown_size, setCrown_size] = useState(1);
 
   const onConfirm = () => {
@@ -26,7 +27,8 @@ const ThreeDView = (props: props) => {
         <CameraControls ref={cameraControls} />
         <color attach={"background"} args={[0x999999]} />
         <directionalLight intensity={1} position-x={10} position-z={3} position-y={2}></directionalLight>
-        <ambientLight intensity={0.1}></ambientLight>
+        <ambientLight intensity={0.4}></ambientLight>
+        <primitive object={new AxesHelper(1)} />
         {props.gltf ? <GLTFComponent gltf={props.gltf} /> : <Box></Box>}
       </Canvas>
       <div className='dataObj'>

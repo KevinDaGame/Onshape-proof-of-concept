@@ -6,23 +6,25 @@ export type part = {
 export type occurrence = {
     hidden: boolean,
     fixed: boolean,
-    transform: [
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number,
-        number
-    ],
+    transform: transform,
     path: Array<string>
 }
+
+export type transform = [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+]
