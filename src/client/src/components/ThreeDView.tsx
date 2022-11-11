@@ -7,9 +7,10 @@ import InputComponent from './InputComponent'
 import Box from './Box'
 import { part } from '../types'
 import { AxesHelper } from 'three'
+import GltfTree from '../data/GltfTree'
 
 type props = {
-  gltf: part[]
+  gltf: GltfTree
   getModel: Function
 }
 const ThreeDView = (props: props) => {

@@ -24,6 +24,12 @@ export default {
       type: 'w',
       typeId: "beb6aa00d34fb71b012e57a9",
       e: "7d1cbdad24f2c7ff917b68e4",
+    },
+    espresso: {
+        d: "a6f221da86aa4e3e8d317737",
+        type: 'w',
+        typeId: "0a1d7a6bf0f94186b94358e0",
+        e: "65e2403e8c63dce036723077"
     }
 
 }
