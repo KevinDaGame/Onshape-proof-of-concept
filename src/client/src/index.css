@@ -52,7 +52,7 @@ button{
   margin-top: 0.5rem;
 }
 button.toggled{ 
-  margin-left: 75%;
+  /* margin-left: 75%; */
 }
 button:hover{
   background-color: lightgray;
