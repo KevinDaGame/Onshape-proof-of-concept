@@ -1,13 +1,13 @@
-import { part } from "../types";
+import { parsedPart } from "../types";
 
 type type = "Part" | "Assembly";
 export default class GltfTree {
     root: GltfNode;
-    constructor(key: string, value: part | null, type: type) {
+    constructor(key: string, value: parsedPart | null, type: type) {
         this.root = new GltfNode(key, value, type);
     }
 
-    *preOrderTraversal(node = this.root): any {
+    *preOrderTraversal(node = this.root): Generator<GltfNode> {
         yield node;
         if (node.children.length) {
             for (let child of node.children) {
@@ -16,7 +16,7 @@ export default class GltfTree {
         }
     }
 
-    *postOrderTraversal(node = this.root): any {
+    *postOrderTraversal(node = this.root): Generator<GltfNode> {
         if (node.children.length) {
             for (let child of node.children) {
                 yield* this.postOrderTraversal(child);
@@ -25,10 +25,14 @@ export default class GltfTree {
         yield node;
     }
 
-    insert(parentNodeKey: string, key: string, type: type, value: part | null) {
+    insert(parentNodeKey: string, key: string, type: type, value: parsedPart | null, name?: string) {
+        console.log("inserting", key, "under", parentNodeKey);
+        
         for (let node of this.preOrderTraversal()) {
             if (node.key === parentNodeKey) {
-                node.children.push(new GltfNode(key, value, type, node));
+                node.children.push(new GltfNode(key, value, type, node, name));
+                console.log("inserted", key, "as child of", parentNodeKey);
+                
                 return true;
             }
         }
@@ -57,10 +61,12 @@ export default class GltfTree {
 export class GltfNode {
     children: GltfNode[];
     key: string;
-    value: part | null;
+    name: string
+    value: parsedPart | null;
     parent: GltfNode | null;
     type: type;
-    constructor(key: any, value: part | null, type: type, parent = null) {
+    constructor(key: any, value: parsedPart | null, type: type, parent: GltfNode | null = null, name?: string) {
+        this.name = name || key;
         this.key = key;
         this.value = value;
         this.type = type;
@@ -74,21 +80,5 @@ export class GltfNode {
 
     get hasChildren() {
         return !this.isLeaf;
-    }
-
-    get rotation() {
-        //add rotation of all parents
-        let transform = this.value?.occurence.transform;
-        let node: GltfNode = this;
-        if (transform) {
-            while (node.parent) {
-                node = node.parent;
-                node.value?.occurence.transform.forEach((t, i) => {
-                    (transform as number[])[i] += t;
-                });
-            }
-            return transform;
-        }
-        return []
     }
 }
