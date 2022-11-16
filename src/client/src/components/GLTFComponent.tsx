@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useReducer } from 'react'
-import { Matrix4 } from 'three'
+import { Color, Matrix4 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import GltfTree, { GltfNode } from '../data/GltfTree'
 import { parsedPart } from '../types'
@@ -11,6 +11,8 @@ function reducer(state: any, action: any) {
   switch (action.type) {
     case 'append':
       return [...state, action.payload]
+    case 'clear':
+      return []
   }
 }
 
@@ -19,6 +21,7 @@ const GLTFComponent = (props: props) => {
   const [model, dispatch] = useReducer(reducer, [])
 
   useEffect(() => {
+    dispatch({ type: 'clear' })
     const gltf = async (part: GltfNode, gltf: string) => {
       gltfLoader.parse(gltf, '',
         (gltf) => { // onLoad

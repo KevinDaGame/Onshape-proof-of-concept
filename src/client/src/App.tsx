@@ -25,11 +25,12 @@ export default class App extends Component<props | state> {
   constructor(props: any) {
     super(props)
     this.getGLTF = this.getGLTF.bind(this);
+    this.getAssembly = this.getAssembly.bind(this);
+    this.updateConfigurationInput = this.updateConfigurationInput.bind(this);
   }
-  async getGLTF(docId: string, docMicroversion: string, elementID: string, partID: string): Promise<any> {
-    let query = this.getConfigurations();
-    let req = `http://localhost:30000/api/parts/d/${docId}/m/${docMicroversion}/e/${elementID}/partid/${partID}/gltf/` + '?' + (query + '&') + 'outputFaceAppearances=true'
-
+  async getGLTF(docId: string, docMicroversion: string, elementID: string, partID: string, configuration: string): Promise<any> {
+    
+    let req = `http://localhost:30000/api/parts/d/${docId}/m/${docMicroversion}/e/${elementID}/partid/${partID}/gltf/?configuration=${configuration}&outputFaceAppearances=true`
     return fetch(req).then(res => res.json()).then(res => {
       return res;
     });
@@ -55,14 +56,14 @@ export default class App extends Component<props | state> {
       query += 'configuration=';
       if (this.state.configurations) {
         this.state.configurations.forEach((config) => {
-          query += `${config.configuration.parameterId}%3d${config.value}&`
+          query += `${config.configuration.parameterId}%3d${config.value};`
         })
       }
     }
     return query;
   }
 
-  updateConfigurationInput(key: string, value: string) {
+  updateConfigurationInput(key: string, value: string|boolean) {
     let configurations = this.state.configurations;
     let configuration = configurations.find((e) => e.configuration.parameterId === key)
     if (configuration) {
@@ -71,27 +72,26 @@ export default class App extends Component<props | state> {
     this.setState({ configurations: configurations });
   }
 
-  async getAssembly(elementId: string) {
+  async getAssembly() {
     let tree = new GltfTree("root", null, "Assembly");
     let rootAssembly: Assembly;
-    let elId = elementId ? elementId : this.state.document.e;
-    let req = `http://localhost:30000/api/assemblies/d/${this.state.document.d}/${this.state.document.type}/${this.state.document.typeId}/e/${this.state.document.e}/?`
+    let query = this.getConfigurations();
+    let req = `http://localhost:30000/api/assemblies/d/${this.state.document.d}/${this.state.document.type}/${this.state.document.typeId}/e/${this.state.document.e}/?${query}excludeSuppressed=true`
     await fetch(req).then(res => res.json()).then(async (assembly: Assembly) => {
       rootAssembly = assembly;
-      this.fetchConfigurations();
       const iteration = (assembly: rootAssembly, parentId?: string) => {
         if (assembly.hasOwnProperty('instances')) {
           for (let p of assembly.instances) {
             let occurence: occurrence = rootAssembly.rootAssembly.occurrences.find((o: occurrence) => o.path.includes(p.id as string))
             if (p.type === 'Part') {
-              if (!occurence.hidden) {
+              if (!p.suppressed) {
                 tree.insert(parentId ?? assembly.elementId, p.id, "Part", {
                   documentId: p.documentId,
                   documentMicroversion: p.documentMicroversion,
                   elementId: p.elementId,
                   partId: p.partId,
                   occurrence: occurence,
-                  gltf: this.getGLTF(p.documentId, p.documentMicroversion, p.elementId, p.partId)
+                  gltf: this.getGLTF(p.documentId, p.documentMicroversion, p.elementId, p.partId, p.configuration)
                 }, p.name)
               }
             }
@@ -112,14 +112,16 @@ export default class App extends Component<props | state> {
   }
 
   componentDidMount(): void {
-    this.getAssembly(this.state.document.e);
+    this.fetchConfigurations().then(() => {
+    this.getAssembly();
+    })
   }
 
   render() {
     return (
       <div>
         {this.state.model ? <ThreeDView gltfTree={this.state.model} /> : <div>Loading...</div>}
-        {this.state.configurations ? <ConfigurationComponent configurations={this.state.configurations} /> : <div>Loading...</div>}
+        {this.state.configurations ? <ConfigurationComponent configurations={this.state.configurations} onChange={this.updateConfigurationInput} onSubmit={this.getAssembly}/> : <div>Loading...</div>}
       </div>
     )
   }
