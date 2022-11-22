@@ -3,7 +3,7 @@ import { Configuration, EnumConfiguration } from '../types'
 
 type props = {
   configurations: Array<{
-    value: string | boolean
+    value: string | boolean | number
     configuration: Configuration
   }>
   onChange: Function
@@ -13,7 +13,7 @@ type props = {
 const ConfigurationComponent = (props: props) => {
   const [toggled, toggle] = useState(false);
   const getInput = (config: {
-    value: string | boolean;
+    value: string | boolean | number;
     configuration: Configuration;
   }) => {
     switch (config.configuration.btType) {
@@ -22,10 +22,13 @@ const ConfigurationComponent = (props: props) => {
       case "BTMConfigurationParameterEnum-105":
         let conf = config.configuration as EnumConfiguration;
         return <select onChange={(e) => { props.onChange(config.configuration.parameterId, e.target.value) }}>
-          {conf.options.map((e) => {
-            return <option value={e.option}>{e.optionName}</option>
+          {conf.options.map((e, i) => {
+            return <option key={i} value={e.option}>{e.optionName}</option>
           })}
         </select>
+      case "BTMConfigurationParameterQuantity-1826":
+        return <input type="number" value={(config as any).defaultValue as number} onChange={(e) => { props.onChange(config.configuration.parameterId, Math.round(parseInt(e.target.value))) }} />
+
     }
   }
 

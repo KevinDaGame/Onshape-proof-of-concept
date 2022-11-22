@@ -73,6 +73,7 @@ export default class App extends Component<props | state> {
   }
 
   async getAssembly() {
+    
     let tree = new GltfTree("root", null, "Assembly");
     let rootAssembly: Assembly;
     let query = this.getConfigurations();
@@ -84,7 +85,9 @@ export default class App extends Component<props | state> {
           for (let p of assembly.instances) {
             let occurence: occurrence = rootAssembly.rootAssembly.occurrences.find((o: occurrence) => o.path.includes(p.id as string))
             if (p.type === 'Part') {
-              if (!p.suppressed) {
+              if (!p.suppressed && !occurence.hidden) {
+                console.log("Getting part" +  p.id);
+                
                 tree.insert(parentId ?? assembly.elementId, p.id, "Part", {
                   documentId: p.documentId,
                   documentMicroversion: p.documentMicroversion,

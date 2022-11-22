@@ -135,7 +135,7 @@ export type Assembly = {
     subAssemblies: Array<Assembly>
 }
 export type Configuration = {
-    "btType": "BTMConfigurationParameterEnum-105"|"BTMConfigurationParameterBoolean-2550",
+    "btType": "BTMConfigurationParameterEnum-105"|"BTMConfigurationParameterBoolean-2550"|"BTMConfigurationParameterQuantity-1826",
     "defaultValue": string|boolean,
     "namespace": string,
     "parameterId": string,

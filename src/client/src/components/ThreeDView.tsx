@@ -20,8 +20,8 @@ const ThreeDView = (props: props) => {
       
         <OrbitControls />
         <color attach={"background"} args={[0xbbbbbb]} />
-        <directionalLight intensity={1} position-x={0} position-z={0} position-y={-3}></directionalLight>
-        <ambientLight intensity={1}></ambientLight>
+        <directionalLight intensity={1} position-x={1} position-z={0} position-y={-3}></directionalLight>
+        <ambientLight intensity={0.4}></ambientLight>
         <primitive object={new AxesHelper(1)} />
         {props.gltfTree ? <GLTFComponent gltf={props.gltfTree} /> : <Box></Box>}
       </Canvas>

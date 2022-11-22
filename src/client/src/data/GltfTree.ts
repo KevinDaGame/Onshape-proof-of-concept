@@ -25,14 +25,10 @@ export default class GltfTree {
         yield node;
     }
 
-    insert(parentNodeKey: string, key: string, type: type, value: parsedPart | null, name?: string) {
-        console.log("inserting", key, "under", parentNodeKey);
-        
+    insert(parentNodeKey: string, key: string, type: type, value: parsedPart | null, name?: string) {        
         for (let node of this.preOrderTraversal()) {
             if (node.key === parentNodeKey) {
                 node.children.push(new GltfNode(key, value, type, node, name));
-                console.log("inserted", key, "as child of", parentNodeKey);
-                
                 return true;
             }
         }
