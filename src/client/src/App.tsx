@@ -1,4 +1,5 @@
 
+import { stringify } from 'querystring';
 import { Component } from 'react'
 import ConfigurationComponent from './components/ConfigurationComponent';
 import ThreeDView from './components/ThreeDView';
@@ -15,13 +16,16 @@ type state = {
     value: string | boolean
     configuration: Configuration
   }>
+  cache: Array<{name: string, gltf: Promise<any>}>
 }
 export default class App extends Component<props | state> {
   state: state = {
     assembly: [],
     document: documents.smile,
-    configurations: []
+    configurations: [],
+    cache: []
   }
+  
   constructor(props: any) {
     super(props)
     this.getGLTF = this.getGLTF.bind(this);
@@ -46,7 +50,7 @@ export default class App extends Component<props | state> {
       configurations.configurationParameters.forEach((e: Configuration) => {
         configurationsArr.push({ configuration: e, value: e.defaultValue });
       })
-      this.setState({ configurations: configurationsArr })
+      this.setState({ configurations: configurationsArr }, () => {this.getAssembly()})
     })
   }
 
@@ -73,7 +77,7 @@ export default class App extends Component<props | state> {
   }
 
   async getAssembly() {
-    
+    let cache: {name: string, gltf: Promise<any>}[] = [];
     let tree = new GltfTree("root", null, "Assembly");
     let rootAssembly: Assembly;
     let query = this.getConfigurations();
@@ -93,9 +97,11 @@ export default class App extends Component<props | state> {
                   documentMicroversion: p.documentMicroversion,
                   elementId: p.elementId,
                   partId: p.partId,
-                  occurrence: occurence,
-                  gltf: this.getGLTF(p.documentId, p.documentMicroversion, p.elementId, p.partId, p.configuration)
+                  occurrence: occurence
                 }, p.name)
+                if (!cache.find((e: any) => e.name === p.elementId + p.partId)) {
+                  cache.push({name: p.elementId + p.partId, gltf: this.getGLTF(p.documentId, p.documentMicroversion, p.elementId, p.partId, p.configuration)})
+                }
               }
             }
             else if (p.type = 'Assembly') {
@@ -110,20 +116,19 @@ export default class App extends Component<props | state> {
       }
       iteration(assembly.rootAssembly, "root");
       this.setState({ model: tree })
+      this.setState({ cache: cache })
     });
 
   }
 
   componentDidMount(): void {
-    this.fetchConfigurations().then(() => {
-    this.getAssembly();
-    })
+    this.fetchConfigurations()
   }
 
   render() {
     return (
       <div>
-        {this.state.model ? <ThreeDView gltfTree={this.state.model} /> : <div>Loading...</div>}
+        {this.state.model ? <ThreeDView gltfTree={this.state.model} cache={this.state.cache} /> : <div>Loading...</div>}
         {this.state.configurations ? <ConfigurationComponent configurations={this.state.configurations} onChange={this.updateConfigurationInput} onSubmit={this.getAssembly}/> : <div>Loading...</div>}
       </div>
     )

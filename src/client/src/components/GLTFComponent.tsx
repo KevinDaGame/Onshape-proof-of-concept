@@ -6,6 +6,7 @@ import { parsedPart } from '../types'
 
 type props = {
   gltf: GltfTree
+  models: Array<{name: string, gltf: Promise<any>}>
 }
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -58,10 +59,10 @@ const GLTFComponent = (props: props) => {
     for (let node of props.gltf.preOrderTraversal()) {
       
       if (node.type === 'Part') {
-        console.log(`rendering ${(node.value as parsedPart).elementId}`);
-        (node as GltfNode).value?.gltf.then(async (m: any) => {
-          await gltf(node, m);
-        })
+        let val = node.value as parsedPart
+        props.models.find((e) => e.name === val.elementId + val.partId)?.gltf?.then((m) => {
+          gltf(node, m);
+        });
       }
     }
 

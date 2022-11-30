@@ -1,0 +1,87 @@
+{
+    "rootAssembly": {
+        "occurrences": [
+            {
+                "hidden": false,
+                "fixed": false,
+                "transform": [0],
+                "path": "string[]"
+            }
+        ],
+        "instances": [
+            {
+                "name": "string",
+                "suppressed": false,
+                "id": "string",
+                "type": "Part|Assembly",
+                "partId": "string",
+                "isStandardContent": false,
+                "fullConfiguration": "string",
+                "configuration": "string",
+                "documentId": "string",
+                "elementId": "string",
+                "documentMicroversion": "string"
+            }
+        ],
+        "fullConfiguration": "string",
+        "configuration": "string",
+        "documentId": "string",
+        "elementId": "string",
+        "documentMicroversion": "string"
+    },
+    "subAssemblies": [
+        {
+          "configuration": "string",
+          "documentId": "string",
+          "documentMicroversion": "string",
+          "documentVersion": "string",
+          "elementId": "string",
+          "features": [
+            {
+              "featureData": {
+                "name": "string"
+              },
+              "featureType": "string",
+              "id": "string",
+              "suppressed": true
+            }
+          ],
+          "fullConfiguration": "string",
+          "instances": [
+            {
+              "configuration": "string",
+              "documentId": "string",
+              "documentMicroversion": "string",
+              "documentVersion": "string",
+              "elementId": "string",
+              "featureId": "string",
+              "fullConfiguration": "string",
+              "id": "string",
+              "isStandardContent": true,
+              "name": "string",
+              "partId": "string",
+              "partNumber": "string",
+              "revision": "string",
+              "status": "DeletedElement",
+              "suppressed": true,
+              "type": "Part|Assembly"
+            }
+          ],
+          "partNumber": "string",
+          "revision": "string"
+        }
+      ],
+    "parts": [
+        {
+            "partId": "string",
+            "bodyType": "solid",
+            "isStandardContent": false,
+            "fullConfiguration": "string",
+            "configuration": "string",
+            "documentId": "string",
+            "elementId": "string",
+            "documentMicroversion": "string"
+        }
+    ],
+    "partStudioFeatures": []
+}

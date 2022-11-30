@@ -1,5 +1,4 @@
 export type parsedPart = {
-    gltf: Promise<any>,
     documentId: string,
     documentMicroversion: string,
     elementId: string,
